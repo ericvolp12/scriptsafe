@@ -54,7 +54,7 @@ var submitFeedback = function(userid, text, url) {
 		data: body,
 		complete: function(xhr, textStatus){
 			console.log(xhr)
-			if(xhr.status == 201){
+			if(xhr.status === 201){
 				$(".feedback_form").remove();
 				$("#bottom").prepend("<div class='success_message'><br /><h2>Your feedback has been successfully submitted</h2></div>");
 				setTimeout(function() {
