@@ -50,7 +50,7 @@ var submitFeedback = function(userid, text, url) {
 	};
 	$.ajax({
 		type: "POST",
-		url: "http://api.volperts.net/feedback",
+		url: "http://api.3ric.co/feedback",
 		data: body,
 		complete: function(xhr, textStatus){
 			console.log(xhr)
