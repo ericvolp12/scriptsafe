@@ -52,18 +52,17 @@ var submitFeedback = function(userid, text, url) {
 		type: "POST",
 		url: "http://api.volperts.net/feedback",
 		data: body,
-		success: function(res){
-			if(res == "ok"){
+		complete: function(xhr, textStatus){
+			console.log(xhr)
+			if(xhr.status == 201){
 				$(".feedback_form").remove();
 				$("#bottom").prepend("<div class='success_message'><br /><h2>Your feedback has been successfully submitted</h2></div>");
 				setTimeout(function() {
-					$(".success_message").hide('blind', {}, 500)
 					$(".success_message").remove();
 				}, 5000);
 			} else {
 				$("#bottom").prepend("<div class='success_message'><br /><h2>There was an error submitting your feedback, please try again!</h2></div>");
 				setTimeout(function() {
-					$(".success_message").hide('blind', {}, 500);
 					$(".success_message").remove();
 				}, 5000);
 			}
