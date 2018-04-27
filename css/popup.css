@@ -354,3 +354,20 @@ span.box {
 	margin-right: 0px;
 	margin-bottom: 0px;
 }
+
+/* Feedback Styles */
+.feedback_box{
+	width: 350px;
+	height: 120px;
+	border: 3px solid #cccccc;
+	padding: 5px;
+	font-family: Tahoma, sans-serif;
+	background-image: url(bg.gif);
+	background-position: bottom right;
+	background-repeat: no-repeat;
+}
+.submit_feedback.box.box1{
+	height: 20px ;
+	line-height: 1.5em ;
+	font-size: 1.5em ;
+}

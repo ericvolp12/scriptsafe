@@ -42,6 +42,48 @@ var x_savehandle = function() {
 	port.postMessage({url: taburl, tid: tabid});
 	save($(this).parent().attr("rel"), $(this), '1');
 };
+var submitFeedback = function(userid, text, url) {
+	var body = {
+		"userid":userid,
+		"text": text,
+		"url": url
+	};
+	$.ajax({
+		type: "POST",
+		url: "http://api.volperts.net/feedback",
+		data: body,
+		success: function(res){
+			if(res == "ok"){
+				$(".feedback_form").remove();
+				$("#bottom").prepend("<div class='success_message'><br /><h2>Your feedback has been successfully submitted</h2></div>");
+				setTimeout(function() {
+					$(".success_message").hide('blind', {}, 500)
+					$(".success_message").remove();
+				}, 5000);
+			} else {
+				$("#bottom").prepend("<div class='success_message'><br /><h2>There was an error submitting your feedback, please try again!</h2></div>");
+				setTimeout(function() {
+					$(".success_message").hide('blind', {}, 500);
+					$(".success_message").remove();
+				}, 5000);
+			}
+		},
+		dataType: "application/json"
+	})
+}
+
+function getRandomToken() {
+    // E.g. 8 * 32 = 256 bits token
+    var randomPool = new Uint8Array(32);
+    crypto.getRandomValues(randomPool);
+    var hex = '';
+    for (var i = 0; i < randomPool.length; ++i) {
+        hex += randomPool[i].toString(16);
+    }
+    // E.g. db18458e2782b2b77e36769c569e263a53885a9944dd0a861e5064eac16f1a
+    return hex;
+}
+
 function openTab(url) {
 	chrome.tabs.create({url: url});
 	window.close();
@@ -540,6 +582,32 @@ function save(url, el, type) {
 			val = 0;
 		}
 	} else {
+		if (val == 3 || val == 0) {
+			// Start Feedback Code
+			$("#bottom").prepend(`<br/><div class='feedback_form form-group'>
+				<h2>Why did you decide to allow this script or domain?</h2>
+				<textarea class='form-control feedback feedback_box' name='feedback_comment' placeholder="Enter your feedback here..."></textarea>
+				<br />
+				<span class="box box1 submit_feedback">Submit Feedback</span>
+				</div><br />`);
+			$(".submit_feedback").bind("click", function(){
+				var text = $('.feedback_box').val();
+				chrome.storage.sync.get('userid', function(items) {
+					var userid = items.userid;
+					if (userid) {
+						useToken(userid);
+					} else {
+						userid = getRandomToken();
+						chrome.storage.sync.set({userid: userid}, function() {
+							useToken(userid);
+						});
+					}
+					function useToken(userid) {
+						submitFeedback(userid, text, url);
+					}
+				});
+			});
+		}
 		if (val < 2) {
 			bkg.domainHandler(url, '2', '1');
 			chrome.runtime.sendMessage({reqtype: "save", url: url, list: val});
