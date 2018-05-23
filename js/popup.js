@@ -589,12 +589,21 @@ function save(url, el, type) {
 			chrome.tabs.query({'active': true, 'currentWindow': true}, function (tabs) {
 				if(tabs.length > 0){
 					var curpage = tabs[0].url;
-					feedbackList.push({
-						visibleDomain: curpage,
-						allowingDomain: url,
-						time: Date.now()
-					});
-					localStorage["feedbackList"] = JSON.stringify(feedbackList);
+					var dup = 0;
+					for (var i = 0; i < feedbackList.length; i++){
+						var item = feedbackList[i];
+						if(item.visibleDomain === curpage && item.allowingDomain === url){
+							dup ++;
+						}
+					}
+					if (!dup){
+						feedbackList.push({
+							visibleDomain: curpage,
+							allowingDomain: url,
+							time: Date.now()
+						});
+						localStorage["feedbackList"] = JSON.stringify(feedbackList);
+					}
 				}
 			});
 
